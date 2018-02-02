@@ -57,7 +57,7 @@ export default class TaskDialog extends React.Component {
         this.setState({'status': value});
     };
 
-    handleChange = (event, index, values) => this.setState({'assignment': values});
+    handleUsers = (event, index, values) => this.setState({'assignment': values});
 
     menuItems(values) {
         return this.state.members.map((member) => (
@@ -113,10 +113,12 @@ export default class TaskDialog extends React.Component {
                     onRequestClose={this.handleClose}
                 >
                     <TextField
+                        id="name"
                         hintText="Name"
                         fullWidth={true}
                         onChange = {this.handleTitle} />
                     <TextField
+                        class="input"
                         hintText="Description"
                         onChange = {this.handleDescription}
                         multiLine={true}
@@ -137,7 +139,7 @@ export default class TaskDialog extends React.Component {
                         multiple={true}
                         floatingLabelText="Select users"
                         value={this.state.assignment}
-                        onChange={this.handleChange}
+                        onChange={this.handleUsers}
                         // selectionRenderer={this.selectionRenderer}
                     >
                         {this.menuItems(this.state.members)}
