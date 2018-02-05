@@ -114,3 +114,6 @@ bundle.js
 
 #Mocha Test
 testBundle.js
+
+#istanbul
+coverage

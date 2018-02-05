@@ -84,7 +84,7 @@ export default class EventEdit extends React.Component {
     };
 
     handleBudget = event => {
-        this.setState({budget: event.target.value});
+        this.setState({budget: +event.target.value});
     };
 
     handleStatus = (event, index, status) => this.setState({status});
@@ -131,6 +131,7 @@ export default class EventEdit extends React.Component {
                     />
 
                     <Dialog
+                        className="dialog-buttons"
                         title={this.props.title}
                         actions={actions}
                         modal={false}
@@ -140,6 +141,7 @@ export default class EventEdit extends React.Component {
                     >
 
                         <TextField
+                            className = "name-input"
                             floatingLabelText="Name:"
                             onChange={this.handleName}
                             hintText='Name'
@@ -148,6 +150,7 @@ export default class EventEdit extends React.Component {
                         />
 
                         <TextField
+                            className = "description-input"
                             floatingLabelText="Description:"
                             onChange={this.handleDescription}
                             hintText='Description'
@@ -156,6 +159,7 @@ export default class EventEdit extends React.Component {
                         />
 
                         <DatePicker
+                            className = "start_at-input"
                             floatingLabelText="Start date and time."
                             onChange={this.handleStartAt}
                             mode="landscape"
@@ -204,6 +208,7 @@ export default class EventEdit extends React.Component {
                         </SelectField>
 
                         <TextField
+                            className="budget-input"
                             floatingLabelText="Budget:"
                             onChange={this.handleBudget}
                             hintText='Budget'
@@ -212,6 +217,7 @@ export default class EventEdit extends React.Component {
                         />
 
                         <SelectField
+                            className="status-input"
                             floatingLabelText="Status"
                             value={this.state.status}
                             onChange={this.handleStatus}

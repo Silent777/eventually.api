@@ -6,7 +6,15 @@
   "scripts": {
     "start": "webpack -d --watch --config webpack.config.js",
     "build": "webpack --config webpack.config.js",
-    "test": "webpack --config webpack-test.config.js"
+    "test": "webpack --config webpack-test.config.js",
+    "coverage": "nyc --reporter=lcov --reporter=text npm run test",
+    "nyc": {
+      "include": [
+        "./eventually/static/src/containers/event/*.js"
+      ],
+      "instrument": false,
+      "sourceMap": false
+    }
   },
   "keywords": [],
   "author": "",
@@ -20,21 +28,28 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "chai-enzyme": "^0.8.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.13.1",
     "eslint-plugin-react": "^7.5.1",
     "expect": "^22.1.0",
     "extract-text-webpack-plugin": "^3.0.2",
+    "istanbul": "^0.4.5",
+    "istanbul-instrumenter-loader": "^3.0.0",
     "material-ui": "^0.19.4",
     "mocha": "^5.0.0",
     "mocha-webpack": "^1.0.1",
+    "nyc": "^11.4.1",
+    "webpack-istanbul-plugin": "0.0.5",
     "webpack-node-externals": "^1.6.0",
     "webpack-shell-plugin": "^0.5.0"
   },
   "dependencies": {
     "@google/maps": "^0.4.5",
-    "react": "^16.1.1",
+    "react": "^16.2.0",
     "react-countdown-now": "^1.2.0",
-    "react-dom": "^16.1.1",
+    "react-dom": "^16.2.0",
     "react-dropzone": "^4.2.3",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
