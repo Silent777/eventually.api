@@ -161,7 +161,7 @@ class MentorStudent(AbstractModel):
         return MentorStudent.objects.filter(student_id=student_id)
 
     @staticmethod
-    def get_all_students(mentor_id):
+    def get_assigned_students(mentor_id):
         """
         A method that only get students who signed in courses in which mentor can be certain mentor,
         but them mentor is not certain mentor
@@ -172,8 +172,8 @@ class MentorStudent(AbstractModel):
         :return: QuerySet with students
         """
 
-        all_students = MentorStudent.objects.exclude(mentor_id=mentor_id)
-        return all_students.exclude(mentor_id=None)
+        assigned_students = MentorStudent.objects.exclude(mentor_id=mentor_id)
+        return assigned_students.exclude(mentor_id=None)
 
     @staticmethod
     def get_available_students():
@@ -185,3 +185,12 @@ class MentorStudent(AbstractModel):
         """
 
         return MentorStudent.objects.filter(mentor_id=None)
+
+    @staticmethod
+    def get_topic_students(topic_id):
+        """
+        A method that only get students who signed in certain course.
+
+        :return: QuerySet with students
+        """
+        return MentorStudent.objects.filter(topic_id=topic_id)

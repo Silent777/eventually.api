@@ -103,8 +103,8 @@ class Curriculum(AbstractModel):
         | }
         """
 
-        return {'id:': self.id,
-                'name:': self.name,
+        return {'id': self.id,
+                'name': self.name,
                 'description': self.description,
                 'goals': self.goals,
                 'team': self.team,
