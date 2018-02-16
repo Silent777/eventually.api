@@ -1,11 +1,11 @@
-import { apiUrl } from 'src/helper';
+//import { apiUrl } from 'src/helper';
 import axios from 'axios';
 
 
 
-const eventPath = apiUrl + 'events/';
-const teamPath = apiUrl + 'team/';
-const userPath = apiUrl + 'user/';
+const eventPath = '/api/v1/' + 'events/';
+const teamPath = '/api/v1/' + 'team/';
+const userPath = '/api/v1/' + 'user/';
 
 export const getEvents = () => {
     return axios.get(eventPath);
