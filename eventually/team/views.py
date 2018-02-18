@@ -3,6 +3,7 @@ Views module
 ============
 """
 
+from django.core.cache import cache
 from django.http import JsonResponse
 from django.views.generic.base import View
 from utils.validators import required_keys_validator
@@ -77,7 +78,11 @@ class TeamView(View):
             return RESPONSE_404_OBJECT_NOT_FOUND
         current_user = request.user
         teams = current_user.teams.all()
-        data = {'teams': [teama.to_dict() for teama in teams]}
+        if 'all_teams' in cache:
+            data = cache.get('all_teams')
+        else:
+            data = {'teams': [team.to_dict() for team in teams]}
+            cache.set("all_teams", data)
         return JsonResponse(data, status=200)
 
     def post(self, request):
@@ -110,6 +115,7 @@ class TeamView(View):
             team = Team.create(**dict_data)
             team = team.to_dict()
             return JsonResponse(team, status=201)
+        cache.delete("all_teams")
         return RESPONSE_400_INVALID_DATA
 
     def put(self, request, team_id):
@@ -142,6 +148,7 @@ class TeamView(View):
         dict_data = update_team_dict(data, request.user)
         if dict_data:
             team.update(**dict_data)
+            cache.delete("all_teams")
             return RESPONSE_200_UPDATED
         return RESPONSE_400_INVALID_DATA
 
@@ -160,6 +167,7 @@ class TeamView(View):
         if request.user == Team.get_by_id(team_id).owner:
             is_deleted = Team.delete_by_id(team_id)
             if is_deleted:
+                cache.delete("all_teams")
                 return RESPONSE_200_DELETED
             return RESPONSE_400_DB_OPERATION_FAILED
         return RESPONSE_403_ACCESS_DENIED

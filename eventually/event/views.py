@@ -7,8 +7,9 @@ of event's model objects.
 """
 
 import datetime
-from django.views.generic.base import View
+from django.core.cache import cache
 from django.http import JsonResponse
+from django.views.generic.base import View
 from team.models import Team
 from utils.validators import event_data_validate
 from utils.responsehelper import (RESPONSE_200_DELETED,
@@ -50,7 +51,11 @@ class EventView(View):
             events = []
             for team in teams:
                 events.extend(team.event_set.all())
-            data = {'events': [event.to_dict() for event in events]}
+            if 'all_events' in cache:
+                data = cache.get('all_events')
+            else:
+                data = {'events': [event.to_dict() for event in events]}
+                cache.set("all_events", data)
             return JsonResponse(data, status=200)
         if event_id:
             event = Event.get_by_id(event_id)
@@ -111,6 +116,7 @@ class EventView(View):
 
         event = Event.create(team, **data)
         if event:
+            cache.delete("all_events")
             return JsonResponse(event.to_dict(), status=201)
 
         return RESPONSE_400_DB_OPERATION_FAILED
@@ -162,6 +168,7 @@ class EventView(View):
                 'status': data.get('status')}
 
         event.update(**data)
+        cache.delete("all_events")
         return RESPONSE_200_UPDATED
 
     def delete(self, request, team_id, event_id=None):  # pylint: disable=unused-argument
@@ -191,6 +198,7 @@ class EventView(View):
 
         is_deleted = Event.delete_by_id(event_id)
         if is_deleted:
+            cache.delete("all_events")
             return RESPONSE_200_DELETED
 
         return RESPONSE_400_DB_OPERATION_FAILED
