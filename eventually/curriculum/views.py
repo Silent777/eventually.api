@@ -37,7 +37,7 @@ class CurriculumView(View):
             curriculum = Curriculum.get_by_id(curriculum_id)
             data = curriculum.to_dict()
             return JsonResponse(data, status=200)
-        curriculums = Curriculum.objects.all()
+        curriculums = Curriculum.get_all()
         data = {'curriculums': [curriculum.to_dict() for curriculum in curriculums]}
         return JsonResponse(data, status=200)
 

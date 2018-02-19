@@ -7,9 +7,9 @@ of topic's model objects.
 """
 from django.views.generic.base import View
 from django.http import JsonResponse
+from django.http import HttpResponse
 from curriculum.models import Curriculum
-from utils.responsehelper import (RESPONSE_400_DB_OPERATION_FAILED,
-                                  RESPONSE_400_INVALID_DATA,
+from utils.responsehelper import (RESPONSE_400_INVALID_DATA,
                                   RESPONSE_404_OBJECT_NOT_FOUND)
 from .models import Topic
 
@@ -51,7 +51,7 @@ class TopicView(View):
             curriculum = Curriculum.get_by_id(curriculum_id)
             if not curriculum:
                 return RESPONSE_404_OBJECT_NOT_FOUND
-            topics = curriculum.topic_set.all()  # Topic.object.filter(curriculum=curriculum_id)
+            topics = curriculum.topic_set.all()
             data = {'topics': [topic.to_dict() for topic in topics]}
             return JsonResponse(data, status=200)
 
@@ -87,7 +87,7 @@ class TopicView(View):
         if topic:
             return JsonResponse(topic.to_dict(), status=201)
 
-        return RESPONSE_400_DB_OPERATION_FAILED
+        return HttpResponse('not implemented', status=501)
 
     def put(self, request, curriculum_id=None, topic_id=None):
         """

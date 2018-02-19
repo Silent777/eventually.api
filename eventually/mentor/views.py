@@ -36,7 +36,7 @@ class MentorView(View):
         """
 
         mentor = CustomUser.get_by_id(request.user.id)
-        topics_id = [record.id for record in MentorStudent.objects.all()]
+        topics_id = [record.id for record in MentorStudent.get_all()]
 
         filters = {}
         if request.GET.get('topic', None):
@@ -86,16 +86,15 @@ class MentorView(View):
         data = request.body
         if not data:
             return RESPONSE_400_INVALID_DATA
-
-        topic = Topic.get_by_id(data.get('topicId'))
+        topic_id = data.get('topicId')
+        topic = Topic.get_by_id(topic_id)
         if not topic:
             return RESPONSE_400_INVALID_DATA
 
         user = request.user
         if user in topic.mentors.all() or user == topic.author:
             return RESPONSE_403_ACCESS_DENIED
-        record = list(MentorStudent.objects.filter(student_id=user.id, topic_id=topic.id))
-        if record:
+        if MentorStudent.topic_student_belonging(topic_id=topic_id, student_id=user.id):
             return RESPONSE_403_ACCESS_DENIED
 
         mentee = MentorStudent.create(student=user, topic=topic)
@@ -133,10 +132,10 @@ class MentorView(View):
         if not student or not topic:
             return RESPONSE_404_OBJECT_NOT_FOUND
 
-        record = list(MentorStudent.objects.filter(student_id=student.id, topic_id=topic.id))
+        record = MentorStudent.topic_student_belonging(topic_id=topic.id, student_id=user.id)
 
         if record:
-            record[0].update(mentor=user, is_done=data.get('is_done'))
+            record.update(mentor=user, is_done=data.get('is_done'))
             return RESPONSE_200_UPDATED
 
     def delete(self, request, topic_id):
@@ -154,10 +153,9 @@ class MentorView(View):
         :rtype: `HttpResponse object."""
 
         user = request.user
-        mentee_set = MentorStudent.objects.filter(topic_id=topic_id, student_id=user.id)
-        if not mentee_set:
+        mentee = MentorStudent.topic_student_belonging(topic_id=topic_id, student_id=user.id)
+        if not mentee:
             return RESPONSE_404_OBJECT_NOT_FOUND
-        mentee = mentee_set[0]
         is_deleted = MentorStudent.delete_by_id(mentee.id)
         if is_deleted:
             return RESPONSE_200_DELETED
@@ -209,10 +207,8 @@ def is_topic_student(request, topic_id):
 
         :return: Boolean
         """
-
-    students = set([record.student for record in MentorStudent.get_topic_students(topic_id)])
-    students = [student.to_dict()['id'] for student in students]
+    student = request.user
     is_student = False
-    if request.user.id in students:
+    if MentorStudent.topic_student_belonging(topic_id=topic_id, student_id=student.id):
         is_student = True
     return JsonResponse({'is_student': is_student}, status=200)

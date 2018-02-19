@@ -140,3 +140,11 @@ class Curriculum(AbstractModel):
             return True
         except (IntegrityError, AttributeError):
             LOGGER.error("Inappropriate values or relational integrity error")
+
+    @staticmethod
+    def get_all():
+        """
+        returns data for json request with querysets of all curriculums
+        """
+        all_curriculums = Curriculum.objects.all()
+        return all_curriculums
