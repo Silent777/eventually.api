@@ -1,5 +1,5 @@
 import React from 'react';
-import { eventTasksServiceGet, eventServiceGet, eventTaskServicePut, taskGetTeamService, getOwner } from './EventService';
+import { eventServiceGet, eventTaskServicePut, taskGetTeamService, getOwner } from './EventService';
 import Event from './Event';
 import EventTaskList from './EventTaskList';
 import TaskDialog from './EventTaskDialog';
@@ -26,20 +26,13 @@ export default class EventDetails extends React.Component {
             owner: null,
             eventName: '',
             eventDescription: '',
-            tasks: [],
             members: [],
         };
     }
 
     componentWillMount(){
-        this.getEventTaskItem();
         this.getEventName();
     }
-
-    getEventTaskItem = () => {
-        eventTasksServiceGet(this.state.eventId).
-            then(response => this.setState({'tasks': response.data.tasks}));
-    };
 
     getTeamMembers = () => {
         let members = [];
@@ -107,7 +100,6 @@ export default class EventDetails extends React.Component {
                     <div style={containerStyle}>
                         <EventTaskList
                             eventId={this.state.eventId}
-                            eventTasks={this.state.tasks}
                             members={this.state.members}
                         />
                     </div>
